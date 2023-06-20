@@ -29,7 +29,6 @@ setup(
     license="Apache License 2.0",
     description="Python utils for using TAU SLURM cluster",
     packages=find_packages(),
-    install_requires=["numpy >= 1.11.1", "matplotlib >= 1.5.1"],
     python_requires=">=3.9",
     install_requires=requirements,
     extras_require={
