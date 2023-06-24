@@ -1,10 +1,11 @@
 import os
 import subprocess
-from typing import Optional
+from typing import Optional, Union
+from tau_slurm.utils import create_directory, write_shebang, append_to_file
 
 
 def submit_job(
-    commands_to_run: list[str],
+    command_to_run: Union[str, list[str]],
     workspace_dir: str,
     job_name: str,
     load_bashrc: bool = True,
@@ -34,14 +35,12 @@ def submit_job(
     path_to_slurm_file = os.path.join(workspace_dir, f"_{job_name}.slurm")
     write_shebang(path_to_slurm_file)
 
+    if not output:
+        output = os.path.join(workspace_dir, f"_{job_name}.out")
+    output = os.path.abspath(output)
+
     append_to_file(path_to_slurm_file, f"#SBATCH --account={account}")
-    if output:
-        append_to_file(path_to_slurm_file, f"#SBATCH --output={output}")
-    else:
-        append_to_file(
-            path_to_slurm_file,
-            f"#SBATCH --output={os.path.join(workspace_dir, f'_{job_name}.out')}",
-        )
+    append_to_file(path_to_slurm_file, f"#SBATCH --output={output}")
 
     if error:
         append_to_file(path_to_slurm_file, f"#SBATCH --error={error}")
@@ -57,26 +56,11 @@ def submit_job(
     if load_bashrc:
         append_to_file(path_to_slurm_file, "source ~/.bashrc")
 
-    for command in commands_to_run:
+    if not isinstance(command_to_run, list):
+        command_to_run = [command_to_run]
+
+    for command in command_to_run:
         append_to_file(path_to_slurm_file, command)
 
     subprocess.run(f"sbatch {path_to_slurm_file}", shell=True, check=True)
-    print("DONE (temp msg)")
-
-
-def create_directory(directory_path: str) -> None:
-    if not os.path.exists(directory_path):
-        os.makedirs(directory_path)
-        print(f"Directory '{directory_path}' created successfully.")
-    else:
-        print(f"Directory '{directory_path}' already exists.")
-
-
-def write_shebang(file_path: str) -> None:
-    with open(file_path, "w") as file:
-        file.write("#! /bin/sh")
-
-
-def append_to_file(file_path: str, content: str) -> None:
-    with open(file_path, "a") as file:
-        file.write(content)
+    print(f"Job submitted successfully. Output file path: {output}")
