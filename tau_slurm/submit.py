@@ -30,14 +30,17 @@ def submit_job(
     Returns:
     int:Returning value
     """
-    create_directory(workspace_dir)
-
-    path_to_slurm_file = os.path.join(workspace_dir, f"_{job_name}.slurm")
-    write_shebang(path_to_slurm_file)
+    job_dir = os.path.join(workspace_dir, job_name)
+    path_to_slurm_file = os.path.join(job_dir, "job.slurm")
 
     if not output:
-        output = os.path.join(workspace_dir, f"_{job_name}.out")
+        output = os.path.join(job_dir, "job.out")
     output = os.path.abspath(output)
+
+    create_directory(workspace_dir)
+    create_directory(job_dir)
+
+    write_shebang(path_to_slurm_file)
 
     append_to_file(path_to_slurm_file, f"#SBATCH --account={account}")
     append_to_file(path_to_slurm_file, f"#SBATCH --output={output}")
