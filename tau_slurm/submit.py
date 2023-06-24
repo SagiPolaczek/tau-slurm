@@ -1,13 +1,14 @@
 import os
 import subprocess
 from typing import Optional, Union
-from tau_slurm.utils import create_directory, write_shebang, append_to_file
+from tau_slurm.utils import create_directory, write_shebang, append_to_file, cd
 
 
 def submit_job(
     command_to_run: Union[str, list[str]],
     workspace_dir: str,
     job_name: str,
+    context_dir: Optional[str] = None,
     load_bashrc: bool = True,
     account: str = "gpu-research",
     output: Optional[str] = None,
@@ -19,6 +20,7 @@ def submit_job(
     mem: int = 50000,
     cpus_per_task: int = 4,
     gpus: int = 1,
+    constraint: Optional[str] = None,
 ) -> None:
     """Wrapper to submit a job on the Uni's cluster
 
@@ -26,6 +28,7 @@ def submit_job(
     command_to_run (str):
     workspace_dir (str):
     load_bashrc (bool):
+    context_dir (str):
 
     Returns:
     int:Returning value
@@ -56,6 +59,9 @@ def submit_job(
     append_to_file(path_to_slurm_file, f"#SBATCH --cpus-per-task={cpus_per_task}")
     append_to_file(path_to_slurm_file, f"#SBATCH --gpus={gpus}")
 
+    if constraint:
+        append_to_file(path_to_slurm_file, f"#SBATCH --constraint={constraint}")
+
     if load_bashrc:
         append_to_file(path_to_slurm_file, "source ~/.bashrc")
 
@@ -65,5 +71,9 @@ def submit_job(
     for command in command_to_run:
         append_to_file(path_to_slurm_file, command)
 
-    subprocess.run(f"sbatch {path_to_slurm_file}", shell=True, check=True)
+    if context_dir:
+        with cd(context_dir):
+            subprocess.run(f"sbatch {path_to_slurm_file}", shell=True, check=True)
+    else:
+        subprocess.run(f"sbatch {path_to_slurm_file}", shell=True, check=True)
     print(f"Job submitted successfully. Output file path: {output}")
