@@ -9,12 +9,12 @@ def submit_job(
     workspace_dir: str,
     job_name: str,
     context_dir: Optional[str] = None,
-    load_bashrc: bool = True,
+    load_bashrc: bool = False,
     account: str = "gpu-research",
     output: Optional[str] = None,
     error: Optional[str] = None,
     partition: str = "gpu-a100-killable",
-    time: int = 1,
+    time: Optional[int] = None,
     signal: str = "USR1@120",
     nodes: int = 1,
     mem: int = 50000,
@@ -27,11 +27,9 @@ def submit_job(
     Parameters:
     command_to_run (str):
     workspace_dir (str):
+    job_name (str):
+    context_dir optional(str):
     load_bashrc (bool):
-    context_dir (str):
-
-    Returns:
-    int:Returning value
     """
     job_dir = os.path.join(workspace_dir, job_name)
     path_to_slurm_file = os.path.join(job_dir, "job.slurm")
@@ -52,7 +50,10 @@ def submit_job(
         append_to_file(path_to_slurm_file, f"#SBATCH --error={error}")
 
     append_to_file(path_to_slurm_file, f"#SBATCH --partition={partition}")
-    append_to_file(path_to_slurm_file, f"#SBATCH --time={time}")
+
+    if time:
+        append_to_file(path_to_slurm_file, f"#SBATCH --time={time}")
+
     append_to_file(path_to_slurm_file, f"#SBATCH --signal={signal}")
     append_to_file(path_to_slurm_file, f"#SBATCH --nodes={nodes}")
     append_to_file(path_to_slurm_file, f"#SBATCH --mem={mem}")
