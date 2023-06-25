@@ -1,5 +1,4 @@
-# tau-slurm
-## 🛠️ TAU's SLURM utils 🛠️
+# 🛠️ TAU's SLURM utils 🛠️
 ## Installation
 ```
 git clone https://github.com/SagiPolaczek/tau-slurm.git
@@ -67,3 +66,27 @@ job_kwargs:
 # Tips
 1. If `error` is not specified, the output file will contain both the stdout and stderr streams in a well-organized manner.
 2. Your turn 🫵🏼
+
+# .bashrc
+### Useful `~/.bashrc` additions
+```bash
+# The actual home directory (mostly for space reasons)
+export HOME_DE_FACTO="<ADD YOUR PATH>"
+
+## CACHE STUFF ##
+# Solves 'WARNING: Building wheel for lit failed: [Errno 122] Disk quota exceeded:' when trying to pip install torch.
+export PIP_CACHE_DIR="$HOME_DE_FACTO/.cache"
+# Redirect HuggingFace cache
+export HF_DATASETS_CACHE="$HOME_DE_FACTO/.cache"
+export HUGGINGFACE_HUB_CACHE="$HOME_DE_FACTO/.cache"
+export HF_HOME="$HOME_DE_FACTO/hugging_face"
+
+
+## USEFUL ALIASES ##
+alias python="python3"
+export MY_GIT_REPOS="$HOME_DE_FACTO/git_repos"
+export MY_SANDBOX="$HOME_DE_FACTO/sandbox"
+
+# Activate the most used conda env
+conda activate env_name
+```
