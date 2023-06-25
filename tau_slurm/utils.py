@@ -26,11 +26,11 @@ def create_directory(directory_path: str) -> None:
         print(f"Directory '{directory_path}' already exists.")
 
 
-def write_shebang(file_path: str) -> None:
+def write_shebang(file_path: str, new_line: str = "\n") -> None:
     with open(file_path, "w") as file:
-        file.write("#! /bin/sh" + "\n")
+        file.write("#! /bin/sh" + new_line)
 
 
-def append_to_file(file_path: str, content: str) -> None:
+def append_to_file(file_path: str, content: str, new_line: str = "\n") -> None:
     with open(file_path, "a") as file:
-        file.write(content + "\n")
+        file.write(content + new_line)
