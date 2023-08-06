@@ -22,13 +22,10 @@ def submit_job(
     gpus: int = 1,
     constraint: Optional[str] = None,
 ) -> None:
-    """Wrapper to submit a job on the Uni's cluster
-    Parameters:
-    command_to_run (str):
-    workspace_dir (str):
-    job_name (str):
-    context_dir optional(str):
-    load_bashrc (bool):
+    """
+    Wrapper to submit a job on the Uni's cluster
+
+    See https://www.cs.tau.ac.il/system/slurm
     """
     workspace_dir_path = Path(workspace_dir)
     job_dir_path = workspace_dir_path.joinpath(job_name)
