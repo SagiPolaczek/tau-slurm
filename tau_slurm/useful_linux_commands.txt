@@ -1,5 +1,0 @@
-# TODO move to README
-
-
-# Check memory disk space usage and sort it
-du -h . | sort -h
