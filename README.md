@@ -87,6 +87,10 @@ alias python="python3"
 export MY_GIT_REPOS="$HOME_DE_FACTO/git_repos"
 export MY_SANDBOX="$HOME_DE_FACTO/sandbox"
 
+# Added git-lfs to paths (consider the path)
+# See: https://stackoverflow.com/a/73244433 ,
+export PATH=$PATH:$HOME_DE_FACTO/packages/git-lfs-3.2.0/
+
 # Activate the most used conda env
 conda activate env_name
 ```
