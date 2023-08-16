@@ -1,2 +1,1 @@
-omegaconf
-hydra-core
+jsonargparse

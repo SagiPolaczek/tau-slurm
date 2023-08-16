@@ -8,9 +8,26 @@ pip install -e .
 pip install -e .[dev]
 ```
 
-## Usage Example
+## Usage Examples
 
-script:
+### Command Line
+##### Minimal args (NOTE: will use default args)
+```
+$ python ./tau_slurm/submit.py 'bash run_gcg_individual.sh llama2 behaviors'
+Submitted batch job 10162
+🚀 Job submitted successfully with output file path @ <MY_HOME_DE_FACTO>/tau_slurm_workspace/tau-slurm_j_2023-08-16_10:08:37/o.out
+```
+##### With kwargs
+```
+$ python ./tau_slurm/submit.py 'bash run_gcg_individual.sh llama2 behaviors' --job_name example --workspace_dirpath <MY_HOME_DE_FACTO>/sandbox
+Submitted batch job 10163
+🚀 Job submitted successfully with output file path @ <MY_HOME_DE_FACTO>/sandbox/example/o.out
+```
+
+### With a json config file
+See [jsonargparse docs](https://jsonargparse.readthedocs.io/en/stable/#configuration-files)
+### Hydra Config
+
 ```python
 from tau_slurm.submit import submit_job
 from omegaconf import DictConfig
@@ -25,7 +42,7 @@ if __name__ == "__main__":
     main()
 ```
 
-Where the hydra config located at `./configs/gen_demo` and looks like*:
+Where the hydra config path is `./configs/gen_demo.yaml` and looks like*:
 ```yaml
 script_path: ${oc.env:MY_GIT_REPOS}/lit-llama/generate.py
 checkpoint_path: ${oc.env:MY_GIT_REPOS}/lit-llama/checkpoints/lit-llama/7B/lit-llama.pth
@@ -34,7 +51,7 @@ now_date_and_time: ${now:%Y-%m-%d}_${now:%H-%M-%S}
 
 job_kwargs:
   command_to_run: "python ${script_path} --prompt '${prompt}' --checkpoint_path '${checkpoint_path}'"
-  workspace_dir: ${oc.env:MY_SANDBOX}
+  workspace_dirpath: ${oc.env:MY_SANDBOX}
   job_name: "gen_demo_${now_date_and_time}"
   time: 1
   ```
@@ -64,7 +81,7 @@ job_kwargs:
 
 
 # Tips
-1. If `error` is not specified, the output file will contain both the stdout and stderr streams in a well-organized manner.
+1. If `error` is not specified is your SLURM config, the output file will contain both the stdout and stderr streams in a well-organized manner.
 2. Your turn 🫵🏼
 
 # .bashrc
