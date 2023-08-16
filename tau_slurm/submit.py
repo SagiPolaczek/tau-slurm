@@ -6,11 +6,12 @@ from typing import Optional, Union
 from jsonargparse import CLI
 from tau_slurm.utils import write_shebang, append_to_file, cd
 
+
 def submit_job(
     command_to_run: Union[str, list[str]],
     *,
     job_name: Optional[str],
-    workspace_dirpath: Optional[Union[str,Path]] = None,
+    workspace_dirpath: Optional[Union[str, Path]] = None,
     context_dir: Optional[str] = None,
     load_bashrc: bool = False,
     account: str = "gpu-research",
@@ -27,18 +28,22 @@ def submit_job(
 ) -> None:
     """
     Wrapper to submit a job on the Uni's cluster
-    
+
     See README & https://www.cs.tau.ac.il/system/slurm
     """
     if workspace_dirpath is None:
         if "HOME_DE_FACTO" not in os.environ:
-            raise Exception(f"You should either supply a 'workspace_dirpath' or define an env varible 'HOME_DE_FACTO' which will point to your home directory with your research/project/course group.")
-        workspace_dirpath = Path(os.environ["HOME_DE_FACTO"]).joinpath("tau_slurm_workspace")
+            raise Exception(
+                "You should either supply a 'workspace_dirpath' or define an env varible 'HOME_DE_FACTO' which will point to your home directory with your research/project/course group."
+            )
+        workspace_dirpath = Path(os.environ["HOME_DE_FACTO"]).joinpath(
+            "tau_slurm_workspace"
+        )
     else:
         workspace_dirpath = Path(workspace_dirpath)
 
     if job_name is None:
-        current_date_time = datetime.now().strftime('%Y-%m-%d_%H:%M:%S')
+        current_date_time = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
         job_name = f"tau-slurm_j_{current_date_time}"
     job_dirpath = workspace_dirpath.joinpath(job_name)
     slurm_filepath = job_dirpath.joinpath("job.slurm")
@@ -81,6 +86,7 @@ def submit_job(
     else:
         subprocess.run(f"sbatch {slurm_filepath}", shell=True, check=True)
     print(f"🚀 Job submitted successfully with output file path @ {output}")
+
 
 if __name__ == "__main__":
     CLI(submit_job)
